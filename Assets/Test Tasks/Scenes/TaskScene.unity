@@ -984,6 +984,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc03f01be9d18ee418ef0ad64ad8df31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  monsterNameField: {fileID: 845489305}
 --- !u!114 &1028097710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1893,7 +1894,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: -159.10838, w: 99.49998}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1750203041
