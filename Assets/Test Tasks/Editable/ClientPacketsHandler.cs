@@ -15,17 +15,26 @@ namespace TestTask.Editable
             ClientManager.Instance.SetClientLogInStatus(responseCode, clientId);
         }
 
-        public static void MonsterDataReceived(Packet packet)
+        public static void NewMonsterDataReceived(Packet packet)
         {
-            Debug.Log("Received monster data!");
+            Debug.Log("Client: Received monster data!");
             //unwrap monster data from packet
             int monsterId = packet.ReadInt();
             MonsterNames monsterType = (MonsterNames)packet.ReadByte();
             string monsterName = packet.ReadString();
             float monsterMaxHealth = packet.ReadFloat();
             float monsterCurrentHealth = packet.ReadFloat();
-            //update client side data
-            ClientManager.Instance.ClientMobsManager.UpdateMonsterName(monsterName);
+            
+            //send unwrapped data to client
+            ClientManager.Instance.ClientMobsManager.UpdateMonster(monsterId, monsterType, monsterName, monsterMaxHealth, monsterCurrentHealth);
+        }
+
+        public static void MonsterHealthPercentUpdateReceived(Packet packet)
+        {
+            int monsterId = packet.ReadInt();
+            float monsterHealthPercent = packet.ReadFloat();
+            ClientManager.Instance.ClientMobsManager.UpdateMonsterHealthPercentage(monsterId, monsterHealthPercent);
+            Debug.Log("Client: received new health percent of " + monsterHealthPercent * 100 + "% for monster ID#" + monsterId);
         }
         #endregion
 
@@ -34,6 +43,14 @@ namespace TestTask.Editable
         {
             Packet packet = new Packet(1);
             ClientManager.Instance.PacketSenderClient.SendToServer(packet);
+        }
+        public static void SendDamageRequest(int monsterId, float damage)
+        {
+            Packet packet = new Packet(2);
+            packet.Write(monsterId);
+            packet.Write(damage);
+            ClientManager.Instance.PacketSenderClient.SendToServer(packet);
+            Debug.Log("Client: sending request to damage monster ID#" + monsterId + " by " + damage);
         }
         #endregion
     }
