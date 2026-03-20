@@ -33,8 +33,8 @@ namespace TestTask.Editable
         {
             int monsterId = packet.ReadInt();
             float monsterHealthPercent = packet.ReadFloat();
-            ClientManager.Instance.ClientMobsManager.UpdateMonsterHealthPercentage(monsterId, monsterHealthPercent);
             Debug.Log("Client: received new health percent of " + monsterHealthPercent * 100 + "% for monster ID#" + monsterId);
+            ClientManager.Instance.ClientMobsManager.DamageMonster(monsterId, monsterHealthPercent);
         }
         #endregion
 

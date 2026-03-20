@@ -1197,6 +1197,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsterNameField: {fileID: 845489305}
   monsterHealthbar: {fileID: 977302940}
+  monsterPortrait: {fileID: 880283297}
+  monsterPortraitSprites:
+  - {fileID: 21300000, guid: 14d1bd72d001df345a1cbc0291035e13, type: 3}
+  - {fileID: 21300000, guid: d7bbe7b5afc3179478ed2f03b329db21, type: 3}
+  - {fileID: 21300000, guid: 9aaef9aec044d5742b12afa544013143, type: 3}
+  - {fileID: 21300000, guid: 567b99777f32ae84bbac36d86548d562, type: 3}
+  - {fileID: 21300000, guid: 0354054eb176b7c4e9826943dfa6bc6e, type: 3}
 --- !u!114 &1028097710
 MonoBehaviour:
   m_ObjectHideFlags: 0
