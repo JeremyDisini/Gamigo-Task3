@@ -14,7 +14,8 @@ namespace TestTask.Editable
             //receive new monster
             {2, ClientPacketsHandler.NewMonsterDataReceived},
             //receive updated monster health (e.g. after damage or heal)
-            {3, ClientPacketsHandler.MonsterHealthPercentUpdateReceived},
+            {3, ClientPacketsHandler.MonsterHealthPercentReceived},
+            //received colors from server
             {4, ClientPacketsHandler.ColorsReceived}
         };
         

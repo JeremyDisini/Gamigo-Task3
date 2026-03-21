@@ -76,7 +76,7 @@ namespace TestTask.Editable
             Debug.Log("Server: sending monster data...");
         }
 
-        public static void SendMonsterUpdatedHealthPercent(byte packetIndex, int monsterId, float health)
+        public static void SendMonsterHealthPercent(byte packetIndex, int monsterId, float health)
         {
             Debug.Log("Server: sending updated health percent for monster ID#" + monsterId + " back to client");
             Packet packet = new Packet(3);

@@ -29,13 +29,21 @@ namespace TestTask.Editable
             ClientManager.Instance.ClientMobsManager.UpdateMonster(monsterId, monsterType, monsterName, monsterMaxHealth, monsterCurrentHealth);
         }
 
-        public static void MonsterHealthPercentUpdateReceived(Packet packet)
+        //whenever a health update is received from the server
+        public static void MonsterHealthPercentReceived(Packet packet)
         {
             byte packetId = packet.ReadByte();
             int monsterId = packet.ReadInt();
             float monsterHealthPercent = packet.ReadFloat();
             Debug.Log("Client: received new health percent of " + monsterHealthPercent * 100 + "% for monster ID#" + monsterId);
-            ClientManager.Instance.ClientMobsManager.UpdateHealthPercentage(packetId, monsterId, monsterHealthPercent);
+            ClientManager.Instance.ClientMobsManager.UpdateHealthbar(packetId, monsterId, monsterHealthPercent);
+        }
+
+        
+        public static void ColorsReceived(Packet packet)
+        {
+            int colorCount = packet.ReadInt();
+            ClientManager.Instance.ClientColorManager.OnReceivedColors(packet.ReadBytes(colorCount * 3));
         }
         #endregion
 
@@ -45,6 +53,7 @@ namespace TestTask.Editable
             Packet packet = new Packet(1);
             ClientManager.Instance.PacketSenderClient.SendToServer(packet);
         }
+
         public static void SendDamageRequest(int monsterId, float damage)
         {
             Packet packet = new Packet(2);
@@ -59,13 +68,6 @@ namespace TestTask.Editable
             Packet packet = new Packet(3);
             packet.Write(count);
             ClientManager.Instance.PacketSenderClient.SendToServer(packet);
-        }
-
-        public static void ColorsReceived(Packet packet)
-        {
-            //send color data to client color manager
-            int colorCount = packet.ReadInt();
-            ClientManager.Instance.ClientColorManager.OnReceivedColors(packet.ReadBytes(colorCount * 3));
         }
         #endregion
     }
