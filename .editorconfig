@@ -1,0 +1,10 @@
+root = true
+
+[*.cs]
+
+# Example: disable a warning
+dotnet_diagnostic.CS0649.severity = none
+dotnet_diagnostic.IDE0090.severity = none
+dotnet_diagnostic.IDE0017.severity = none
+dotnet_diagnostic.IDE0059.severity = none
+dotnet_diagnostic.IDE0044.severity = none

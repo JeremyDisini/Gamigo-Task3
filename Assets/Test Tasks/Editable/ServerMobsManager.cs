@@ -10,6 +10,7 @@ namespace TestTask.Editable
     public class ServerMobsManager
     {
         [field: SerializeField] public MonsterData MonsterData { get; private set; }
+        private byte packetIndex = 250;
 
         public ServerMobsManager()
         {
@@ -34,7 +35,8 @@ namespace TestTask.Editable
         //whenever the monster is damaged, send the updated health back to the client
         private void OnMonsterDamaged(float updatedHealth)
         {
-            ServerPacketsHandler.SendMonsterUpdatedHealthPercent(MonsterData.MonsterId, updatedHealth);
+            packetIndex++;
+            ServerPacketsHandler.SendMonsterUpdatedHealthPercent(packetIndex, MonsterData.MonsterId, updatedHealth);
         }
         
         public void OnMonsterDied()

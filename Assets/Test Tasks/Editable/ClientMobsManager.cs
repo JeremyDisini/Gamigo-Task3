@@ -1,6 +1,7 @@
 using System;
 using TestTask.NonEditable;
 using TMPro;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = System.Random;
@@ -14,7 +15,13 @@ namespace TestTask.Editable
         [SerializeField] private Image monsterPortrait;
         [SerializeField] private Sprite[] monsterPortraitSprites;
         private int monsterId = -1;
-        
+
+        private byte healthPercentagePacketId = 0;
+
+        //storing current and max health locally so we can manipulate client side data 
+        private float monsterCurrentHealth;
+        private float monsterMaxHealth;
+
         //whenever a monster is updated
         public void UpdateMonster(int id, MonsterNames type, string name, float maxHealth, float currentHealth)
         {
@@ -22,28 +29,44 @@ namespace TestTask.Editable
             monsterNameField.text = name;
             monsterPortrait.sprite = monsterPortraitSprites[(int)type];
             monsterPortrait.color = Color.white;
-            monsterHealthbar.value = currentHealth / maxHealth;
+            monsterCurrentHealth = currentHealth;
+            monsterMaxHealth = maxHealth;
+            monsterHealthbar.value = monsterCurrentHealth / monsterMaxHealth;
         }
 
-        public void DamageMonster(int id, float healthPercent)
+        //Updates health percentage according to what's happening in the server
+        public void UpdateHealthPercentage(byte packetId, int monsterId, float healthPercent)
         {
             //error checking in case we happen to receive a packet from a different id (e.g. health update from a monster we already killed)
-            if (id != monsterId)
+            if (monsterId != this.monsterId)
             {
-                Debug.LogWarning("Error: Received health update for a different monster ID#" + id + ". (expected monster ID# " + monsterId + ")");
+                Debug.LogWarning("Received health update for a different monster ID#" + monsterId + ". (expected monster ID# " + this.monsterId + ")");
                 return;
             }
-            else if (healthPercent > monsterHealthbar.value)
+
+            //if the packet is from the past relative to the current latest packet, then ignore it
+            //Add an exception for if the packetId overflows (only accept packets below 127 to prevent REALLY old packets from being accepted)
+            if ((packetId <= healthPercentagePacketId) &&
+                !(healthPercentagePacketId == byte.MaxValue && packetId < byte.MaxValue/2))
             {
-                Debug.LogError("Error: Received Damage packets out of order.");
+                Debug.LogError("Dropped outdated packet #" + (int)packetId + " (current latest packet ID: #" + (int)healthPercentagePacketId + ")");
                 return;
             }
+
+            //record the packet index and set monster health to proper value
+            healthPercentagePacketId = packetId;
             monsterHealthbar.value = healthPercent;
         }
 
-        public void DamageMonster()
+        //send a damage request to the server
+        public void DamageMonster(float damage)
         {
-            ClientPacketsHandler.SendDamageRequest(monsterId,50);
+            ClientPacketsHandler.SendDamageRequest(monsterId,damage);
+
+            //update the client side UI immediately based on previous values to make actions feel more responsive even on slow connections
+            //this value will be overriden by the server in the future
+            monsterCurrentHealth -= damage;
+            monsterHealthbar.value = monsterCurrentHealth / monsterMaxHealth;
         }
     }
 }

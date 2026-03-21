@@ -31,10 +31,11 @@ namespace TestTask.Editable
 
         public static void MonsterHealthPercentUpdateReceived(Packet packet)
         {
+            byte packetId = packet.ReadByte();
             int monsterId = packet.ReadInt();
             float monsterHealthPercent = packet.ReadFloat();
             Debug.Log("Client: received new health percent of " + monsterHealthPercent * 100 + "% for monster ID#" + monsterId);
-            ClientManager.Instance.ClientMobsManager.DamageMonster(monsterId, monsterHealthPercent);
+            ClientManager.Instance.ClientMobsManager.UpdateHealthPercentage(packetId, monsterId, monsterHealthPercent);
         }
         #endregion
 
