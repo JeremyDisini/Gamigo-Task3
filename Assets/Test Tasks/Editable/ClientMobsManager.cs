@@ -19,8 +19,6 @@ namespace TestTask.Editable
         private byte healthPercentagePacketId = 0;
 
         //storing current and max health locally so we can manipulate client side data 
-        private float monsterCurrentHealth;
-        private float monsterMaxHealth;
 
         //whenever a monster is updated
         public void UpdateMonster(int id, MonsterNames type, string name, float maxHealth, float currentHealth)
@@ -29,9 +27,7 @@ namespace TestTask.Editable
             monsterNameField.text = name;
             monsterPortrait.sprite = monsterPortraitSprites[(int)type];
             monsterPortrait.color = Color.white;
-            monsterCurrentHealth = currentHealth;
-            monsterMaxHealth = maxHealth;
-            monsterHealthbar.value = monsterCurrentHealth / monsterMaxHealth;
+            monsterHealthbar.value = currentHealth / maxHealth;
         }
 
         //Updates health percentage according to what's happening in the server
@@ -62,11 +58,6 @@ namespace TestTask.Editable
         public void DamageMonster(float damage)
         {
             ClientPacketsHandler.SendDamageRequest(monsterId,damage);
-
-            //update the client side UI immediately based on previous values to make actions feel more responsive even on slow connections
-            //this value will be overriden by the server in the future
-            monsterCurrentHealth -= damage;
-            monsterHealthbar.value = monsterCurrentHealth / monsterMaxHealth;
         }
     }
 }
