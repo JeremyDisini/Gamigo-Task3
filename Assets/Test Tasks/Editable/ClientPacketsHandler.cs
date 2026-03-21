@@ -53,6 +53,20 @@ namespace TestTask.Editable
             ClientManager.Instance.PacketSenderClient.SendToServer(packet);
             Debug.Log("Client: sending request to damage monster ID#" + monsterId + " by " + damage);
         }
+
+        public static void SendColorRequest(int count)
+        {
+            Packet packet = new Packet(3);
+            packet.Write(count);
+            ClientManager.Instance.PacketSenderClient.SendToServer(packet);
+        }
+
+        public static void ColorsReceived(Packet packet)
+        {
+            //send color data to client color manager
+            int colorCount = packet.ReadInt();
+            ClientManager.Instance.ClientColorManager.OnReceivedColors(packet.ReadBytes(colorCount * 3));
+        }
         #endregion
     }
 }

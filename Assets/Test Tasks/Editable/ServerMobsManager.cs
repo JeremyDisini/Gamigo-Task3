@@ -10,7 +10,7 @@ namespace TestTask.Editable
     public class ServerMobsManager
     {
         [field: SerializeField] public MonsterData MonsterData { get; private set; }
-        private byte packetIndex = 250;
+        private byte packetIndex = 0;
 
         public ServerMobsManager()
         {

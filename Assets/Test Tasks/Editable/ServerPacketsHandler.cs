@@ -29,6 +29,16 @@ namespace TestTask.Editable
             ServerMock.Instance.ServerMobsManager.MonsterData.TakeDamage(damage);
         }
 
+        //color request
+        public static void ColorRequest(Packet packet)
+        {
+            int colorCount = packet.ReadInt();
+            Debug.Log("Server: Received color request. " + colorCount + " colors requested.");
+
+            //generate and send colors back to the client
+            SendColors(colorCount);
+        }
+
         #endregion
 
         #region Packet Senders
@@ -73,6 +83,26 @@ namespace TestTask.Editable
             packet.Write(packetIndex);
             packet.Write(monsterId);
             packet.Write(health);
+            ServerMock.Instance.PacketSenderServer.SendToClient(packet);
+        }
+
+        public static void SendColors(int colorCount)
+        {
+            //generate random colors and store in a byte array
+            byte[] colors = new byte[3 * colorCount];
+            for(int i = 0; i < colorCount * 3; i += 3)
+            {
+                Color32 randomColor = Random.ColorHSV();
+                colors[i] = randomColor.r;
+                colors[i + 1] = randomColor.g;
+                colors[i + 2] = randomColor.b;
+            }
+
+            //write generated data to packet and send back to client
+            Packet packet = new Packet(4);
+            packet.Write(colorCount);
+            packet.Write(colors);
+
             ServerMock.Instance.PacketSenderServer.SendToClient(packet);
         }
         #endregion
