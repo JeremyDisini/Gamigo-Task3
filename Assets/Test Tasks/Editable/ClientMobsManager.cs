@@ -30,14 +30,28 @@ namespace TestTask.Editable
             monsterHealthbar.value = currentHealth / maxHealth;
         }
 
-        //Updates health bar according to what's happening in the server
-        public void UpdateHealthbar(byte packetId, int monsterId, float healthPercent)
+        //function to update the healthbar UI
+        public void UpdateHealthbar(float percent)
+        {
+            monsterHealthbar.value = percent;
+        }
+
+        //send a damage request to the server
+        public void DamageMonster(float damage)
+        {
+            ClientPacketsHandler.SendDamageRequest(monsterId,damage);
+        }
+        
+        #region Packet Helpers
+        //Tries to register the given packet ID as the latest packet.
+        //Returns false if the packet is invalid or too old. Returns true otherwise.
+        public bool TryRegisterHealthPacket(byte packetId, int monsterId)
         {
             //ignore the packet if monster IDs mismatch (e.g. health update from a monster we already killed)
             if (monsterId != this.monsterId)
             {
                 Debug.LogWarning("Received health update for a different monster ID#" + monsterId + ". (expected monster ID# " + this.monsterId + ")");
-                return;
+                return false;
             }
 
             //ignore packet if it is from the past relative to the current latest packet
@@ -46,18 +60,13 @@ namespace TestTask.Editable
                 !(healthPercentageLatestPacketId == byte.MaxValue && packetId < byte.MaxValue/2))
             {
                 Debug.LogError("Dropped outdated packet #" + (int)packetId + " (current latest packet ID: #" + (int)healthPercentageLatestPacketId + ")");
-                return;
+                return false;
             }
 
-            //Update the UI and record the current latest packet id
+            //register the packet and respond to the request
             healthPercentageLatestPacketId = packetId;
-            monsterHealthbar.value = healthPercent;
+            return true;
         }
-
-        //send a damage request to the server
-        public void DamageMonster(float damage)
-        {
-            ClientPacketsHandler.SendDamageRequest(monsterId,damage);
-        }
+        #endregion
     }
 }

@@ -36,7 +36,13 @@ namespace TestTask.Editable
             int monsterId = packet.ReadInt();
             float monsterHealthPercent = packet.ReadFloat();
             Debug.Log("Client: received new health percent of " + monsterHealthPercent * 100 + "% for monster ID#" + monsterId);
-            ClientManager.Instance.ClientMobsManager.UpdateHealthbar(packetId, monsterId, monsterHealthPercent);
+
+            //Try to register the health packet to the client 
+            bool success = ClientManager.Instance.ClientMobsManager.TryRegisterHealthPacket(packetId, monsterId);
+            if(success)
+            {
+                ClientManager.Instance.ClientMobsManager.UpdateHealthbar(monsterHealthPercent);
+            }
         }
 
         
@@ -65,6 +71,12 @@ namespace TestTask.Editable
 
         public static void SendColorRequest(int count)
         {
+            if(count <= 0)
+            {
+                Debug.LogError("Error: Requested 0 or negative colors.");
+                return;
+            }
+
             Packet packet = new Packet(3);
             packet.Write(count);
             ClientManager.Instance.PacketSenderClient.SendToServer(packet);

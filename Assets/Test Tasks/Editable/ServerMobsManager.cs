@@ -19,6 +19,7 @@ namespace TestTask.Editable
             MonsterData = SpawnMonster();
         }
 
+        //spawns a new monster
         public MonsterData SpawnMonster()
         {
             var monsterId = Random.Range(1, 1000);

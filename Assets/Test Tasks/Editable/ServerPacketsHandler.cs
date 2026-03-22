@@ -33,6 +33,11 @@ namespace TestTask.Editable
         public static void ColorRequest(Packet packet)
         {
             int colorCount = packet.ReadInt();
+            if(colorCount <= 0)
+            {
+                Debug.LogError("Error: Server received an invalid request for " + colorCount + " colors.");
+            }
+
             Debug.Log("Server: Received color request. " + colorCount + " colors requested.");
 
             //generate and send colors back to the client
