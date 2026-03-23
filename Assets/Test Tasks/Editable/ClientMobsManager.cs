@@ -1,10 +1,7 @@
-using System;
 using TestTask.NonEditable;
 using TMPro;
-using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.UI;
-using Random = System.Random;
 
 namespace TestTask.Editable
 {

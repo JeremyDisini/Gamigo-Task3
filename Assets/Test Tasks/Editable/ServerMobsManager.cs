@@ -1,9 +1,5 @@
-using System;
-using TestTask.Editable;
 using TestTask.NonEditable;
-using UnityEditor.PackageManager;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace TestTask.Editable
 {
